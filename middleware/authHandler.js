@@ -3,8 +3,10 @@
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/userModel");
 
-const authHandler = async (req, res, next) => {
+const userHandler = async (req, res, next) => {
   const token = req.cookies.token;
+
+
   if (!token) {
     return res
       .status(401)
@@ -36,4 +38,12 @@ const authHandler = async (req, res, next) => {
   }
 };
 
-module.exports = authHandler;
+
+const adminHandler = async (req, res, next) => {
+   if (req.user && req.user.role === "admin") {
+     next();
+   } else {
+     res.status(403).json({ error: "Access denied" });
+   }
+}
+module.exports = {userHandler, adminHandler}

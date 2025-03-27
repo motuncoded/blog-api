@@ -1,55 +1,35 @@
 // Post Controller
 
 const postModel = require("../models/postModel");
-const userModel = require("../models/userModel");
 
 // get all posts(protected)
-const get_All_Posts = async (req, res, next) => {
-  try {
-    const userId = req.user._id;
-    if (!userId) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: Please log in to update a post." });
-    }
-    const posts = await postModel.find();
-    if (posts.length === 0) {
-      res.json({ posts, message: "No available Posts" }).status(200);
-    }
-    res.json({ posts, message: " All posts generated" }).status(200);
-  } catch (err) {
-    next(err);
-  }
+const get_all_posts = async (req, res, next) => {
+   try {
+     const posts = await postModel.find().populate("author", "username");
+     res.json(posts);
+   } catch (error) {
+     res.status(500).json({ error: error.message });
+   }
 };
 
-//publish a post(protected)
-const publish_A_Post = async (req, res, next) => {
-  const paramId = req.params.id;
+//create a post
+const create_a_post = async (req, res, next) => {
+  const userId = req.user._id;
   try {
-    const userId = req.user._id;
-    if (!userId) {
-      return res.status(401).json({
-        message: "Unauthorized: Please log in to create a post.",
-      });
+
+    if (!req.body) {
+       return res.status(404).json({ message: "Post not found" });
     }
-    const user = await userModel.findById(paramId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    const newPost = new postModel({
-      ...req.body,
-      userId: paramId,
-    });
-    const createdPostWithUserId = await newPost.save();
-    user.publications.push(createdPostWithUserId._id);
-    res.status(200).json({ createdPostWithUserId });
+       const newPost = new postModel({ ...req.body, author: userId });
+       await newPost.save();
+       res.status(201).json({ newPost, message: "Post created successfully" });
   } catch (err) {
-    next(err);
+    next(err)
   }
 };
 
 // get a post(protected)
-const get_A_Post = async (req, res, next) => {
+const get_a_post = async (req, res, next) => {
   const { id } = req.params;
   try {
     const userId = req.user._id;
@@ -69,7 +49,7 @@ const get_A_Post = async (req, res, next) => {
 };
 
 //update a post(protected)
-const update_A_Post = async (req, res, next) => {
+const update_a_Post = async (req, res, next) => {
   const { id } = req.params;
   const updates = req.body;
 
@@ -110,7 +90,7 @@ const update_A_Post = async (req, res, next) => {
 };
 
 // delete a post(protected)
-const delete_A_Post = async (req, res, next) => {
+const delete_a_Post = async (req, res, next) => {
   const { id } = req.params;
 
   try {
@@ -144,9 +124,9 @@ const delete_A_Post = async (req, res, next) => {
   }
 };
 module.exports = {
-  get_All_Posts,
-  publish_A_Post,
-  get_A_Post,
-  update_A_Post,
-  delete_A_Post,
+  get_all_posts,
+create_a_post,
+  get_a_post,
+  update_a_Post,
+  delete_a_Post,
 };
