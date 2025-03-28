@@ -26,7 +26,7 @@ https://blog-api-one-pi.vercel.app/
 - **Register a user**
 
 ```
-POST /api/user/register
+POST /api/auth/register
 ```
 
 Register users that want to check out products. This end points provides full details for each user
@@ -34,7 +34,7 @@ Register users that want to check out products. This end points provides full de
 - **Login a user**
 
 ```
-POST /api/user/login
+POST /api/auth/login
 ```
 
 Login users that want to check out products.
@@ -42,60 +42,60 @@ Login users that want to check out products.
 - **Logout a user**
 
 ```
-POST /api/user/logout
+POST /api/auth/logout
 ```
 
 Login users are allowed to logout of the .
 
-#### Product catalogue with categories
+#### CRUD operations for blog posts
 
-##### Products
+##### Posts
 
-- **Create a product(s)**
+- **Create a post(s)**
 
-Creates a new product for user managed by the admin
-
-```
-POST /api/product
-```
-
-- **Get all products**
-
-Retrieves a list of all products
+Creates a new post for the blog 
 
 ```
-GET /api/products
+POST /api/post
 ```
 
-- **Get a product**
+- **Get all posts**
 
-Retrieves a product
-
-```
-GET /api/product/:id
-```
-
-- **Update a product**
-
-Upadate a product
+Retrieves a list of all posts
 
 ```
-PUT /api/product/:id
+GET /api/posts 
 ```
 
-- **Delete a product**
+- **Get a post by id**
 
-Delete a product
+Retrieves a post by id
 
 ```
-DELETE /api/product/:id
+GET /api/post/:id
 ```
 
-##### Category
+- **Update a post**
 
-- **Create a category(s)**
+Upadate the post
 
-Creates a category for product
+```
+PUT /api/post/:id
+```
+
+- **Delete a post**
+
+Delete a post
+
+```
+DELETE /api/post/:id
+```
+
+##### Comment system for blog posts
+
+- **Create a comment**
+
+Creates a comment under a post
 
 ```
 POST /api/category
