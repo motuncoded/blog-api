@@ -9,6 +9,11 @@ const userModel = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     gmail: {
       type: String,
       required: true,

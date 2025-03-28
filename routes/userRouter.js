@@ -1,20 +1,14 @@
 // User Router Middleware
 
 const express = require("express");
-const {
-  register,
-  login,
-  logout
-
-} = require("../controllers/userController");
-
+const { register, login, logout } = require("../controllers/userController");
 
 const userRouter = express
   .Router()
-  .post("/user/register", register)
-  .post("/user/login", login)
-  .post("/user/logout", logout);
+  .post("/auth/register", register)
+  .post("/auth/login", login)
+  .post("/auth/logout", logout);
 
-  //.get("/users") 
+//.get("/users")
 
 module.exports = userRouter;

@@ -6,7 +6,6 @@ const userModel = require("../models/userModel");
 const userHandler = async (req, res, next) => {
   const token = req.cookies.token;
 
-
   if (!token) {
     return res
       .status(401)
@@ -38,12 +37,13 @@ const userHandler = async (req, res, next) => {
   }
 };
 
-
 const adminHandler = async (req, res, next) => {
-   if (req.user && req.user.role === "admin") {
-     next();
-   } else {
-     res.status(403).json({ error: "Access denied" });
-   }
-}
-module.exports = {userHandler, adminHandler}
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    res
+      .status(403)
+      .json({ message: "Access denied, please register as an admin" });
+  }
+};
+module.exports = { userHandler, adminHandler };

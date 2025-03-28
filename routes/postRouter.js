@@ -3,19 +3,19 @@
 const { Router } = require("express");
 
 const {
-  get_All_Posts,
-create_a_post,
-  get_A_Post,
-  update_A_Post,
-  delete_A_Post,
+  get_all_posts,
+  create_a_post,
+  get_a_post,
+  update_a_post,
+  delete_a_post,
 } = require("../controllers/postController");
-const authHandler = require("../middleware/authHandler");
+const { userHandler } = require("../middleware/authHandler");
 
 const postRouter = Router()
-  .get("/posts", authHandler, get_All_Posts)
-  .get("/post/:id", authHandler, get_A_Post)
-  .post("/post/:id", authHandler,create_a_post)
-  .put("/post/:id", authHandler, update_A_Post)
-  .delete("/post/:id", authHandler, delete_A_Post);
+  .get("/posts", get_all_posts)
+  .get("/post/:id", get_a_post)
+  .post("/post", userHandler, create_a_post)
+  .put("/post/:id", userHandler, update_a_post)
+  .delete("/post/:id", userHandler, delete_a_post);
 
 module.exports = postRouter;

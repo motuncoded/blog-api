@@ -6,16 +6,16 @@ const generateToken = require("../jwt/generateToken");
 
 // create a user
 const register = async (req, res, next) => {
-  const { username, password, gmail } = req.body;
+  const { username, password, gmail, name } = req.body;
 
   if (!username || !password || !gmail) {
     return res.status(404).json({ message: "Please provide all details" });
   }
 
-   const gmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-   if (!gmailRegex.test(gmail)) {
-     return res.status(400).json({ msg: "Invalid gmail address" });
-   }
+  const gmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!gmailRegex.test(gmail)) {
+    return res.status(400).json({ msg: "Invalid gmail address" });
+  }
 
   try {
     const user = await userModel.findOne({ gmail });
@@ -25,10 +25,10 @@ const register = async (req, res, next) => {
 
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
-    
+
     const newUser = new userModel({ ...req.body, password: hashedPassword });
     await newUser.save();
-    
+
     res.status(201).json({ newUser, message: "User registered successfully" });
   } catch (error) {
     next(error);
@@ -73,7 +73,6 @@ const login = async (req, res, next) => {
 };
 
 const logout = async (req, res, next) => {
-
   res.cookie("token", "", {
     httpOnly: true,
     secure: process.env.NOD_ENV === "production",
@@ -84,12 +83,8 @@ const logout = async (req, res, next) => {
   res.status(200).json({ msg: "User successfully logged out" });
 };
 
-// const get_users = (res, req, ) => {
-  
-// }
-
 module.exports = {
   register,
   login,
-  logout
+  logout,
 };
