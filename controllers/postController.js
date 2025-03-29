@@ -5,7 +5,17 @@ const postModel = require("../models/postModel");
 // get all posts(protected)
 const get_all_posts = async (req, res, next) => {
   try {
-    const posts = await postModel.find().populate("author", "username name");
+    const posts = await postModel
+      .find()
+      .populate("author", "username name")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author",
+          select: "username",
+        },
+      })
+      .sort({ createdAt: -1 });
     res.json({ posts, message: "Post retrieved successfully" });
   } catch (error) {
     next(error);
@@ -17,7 +27,7 @@ const create_a_post = async (req, res, next) => {
   const userId = req.user._id;
   try {
     if (!req.body) {
-      return res.status(404).json({ message: "Post not found" });
+      return res.status(404).json({ message: "Post not found, create a post" });
     }
     const newPost = new postModel({ ...req.body, author: userId });
     await newPost.save();
@@ -29,11 +39,20 @@ const create_a_post = async (req, res, next) => {
 
 // get a post(protected)
 const get_a_post = async (req, res, next) => {
-  const { id } = req.params;
+  const { postId } = req.params;
   try {
-    const post = await postModel.findById(id);
+    const post = await postModel
+      .findById(postId)
+      .populate("author", "username name")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author",
+          select: "username",
+        },
+      });
     if (!post) {
-      return res.status(404).json({ message: "Post not found" });
+      return res.status(404).json({ message: "Post not found, create a post" });
     }
     res.status(200).json({ post, message: "Post retrieved successfully" });
   } catch (err) {
@@ -43,7 +62,7 @@ const get_a_post = async (req, res, next) => {
 
 //update a post(protected)
 const update_a_post = async (req, res, next) => {
-  const { id } = req.params;
+  const { postId } = req.params;
   const updates = req.body;
 
   try {
@@ -53,8 +72,8 @@ const update_a_post = async (req, res, next) => {
         .status(401)
         .json({ message: "Unauthorized: Please log in to update a post." });
     }
-    // Find the book by ID
-    const post = await postModel.findById(id);
+    // Find the post by ID
+    const post = await postModel.findById(postId);
     if (!post) {
       return res
         .status(404)
@@ -68,8 +87,8 @@ const update_a_post = async (req, res, next) => {
       });
     }
 
-    // Update the book with the new details
-    const updatedPost = await postModel.findByIdAndUpdate(id, updates, {
+    // Update the post with the new details
+    const updatedPost = await postModel.findByIdAndUpdate(postId, updates, {
       new: true,
       runValidators: true,
     });
@@ -84,8 +103,7 @@ const update_a_post = async (req, res, next) => {
 
 // delete a post(protected)
 const delete_a_post = async (req, res, next) => {
-  const { id } = req.params;
-
+  const { postId } = req.params;
   try {
     const userId = req.user._id;
     if (!userId) {
@@ -93,25 +111,23 @@ const delete_a_post = async (req, res, next) => {
         .status(401)
         .json({ message: "Unauthorized: Please log in to delete a post." });
     }
-    const post = await postModel.findById(id);
+    const post = await postModel.findById(postId);
     if (!post) {
-      return res.status(404).json({ message: "Post not found" });
+      return res.status(404).json({ message: "Post not found, create a post" });
     }
-    if (post.userId.toString() !== userId.toString()) {
+    if (post.author.toString() !== userId.toString()) {
       return res.status(403).json({
         message: "Access denied: You can only delete your own posts.",
       });
     }
-    const deletedPost = await postModel.findByIdAndDelete(id);
+    const deletedPost = await postModel.findByIdAndDelete(postId);
 
     if (!deletedPost) {
       return res
         .status(404)
         .json({ message: "Posts not found with the provided ID." });
     }
-    res
-      .json({ post: deletedPost, message: "Post deleted successfully" })
-      .status(200);
+    res.json({ deletedPost, message: "Post deleted successfully" }).status(200);
   } catch (err) {
     next(err);
   }

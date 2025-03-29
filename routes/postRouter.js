@@ -13,9 +13,9 @@ const { userHandler } = require("../middleware/authHandler");
 
 const postRouter = Router()
   .get("/posts", get_all_posts)
-  .get("/post/:id", get_a_post)
+  .get("/post/:postId", get_a_post)
   .post("/post", userHandler, create_a_post)
-  .put("/post/:id", userHandler, update_a_post)
-  .delete("/post/:id", userHandler, delete_a_post);
+  .put("/post/:postId", userHandler, update_a_post)
+  .delete("/post/:postId", userHandler, delete_a_post);
 
 module.exports = postRouter;

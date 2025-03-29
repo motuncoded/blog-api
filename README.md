@@ -53,7 +53,7 @@ Login users are allowed to logout of the .
 
 - **Create a post(s)**
 
-Creates a new post for the blog 
+Creates a new post for the blog
 
 ```
 POST /api/post
@@ -64,7 +64,7 @@ POST /api/post
 Retrieves a list of all posts
 
 ```
-GET /api/posts 
+GET /api/posts
 ```
 
 - **Get a post by id**

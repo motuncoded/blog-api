@@ -1,6 +1,7 @@
 const express = require("express");
 const postRouter = require("./routes/postRouter");
 const userRouter = require("./routes/userRouter");
+const commentRouter = require("./routes/commentRouter");
 const connectdb = require("./db/dbController");
 const err = require("./middleware/errorHandler");
 const cookieParser = require("cookie-parser");
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
 });
 app.use("/api", postRouter);
 app.use("/api", userRouter);
+app.use("/api", commentRouter);
 
 app.use(err);
 

@@ -80,7 +80,7 @@ const logout = async (req, res, next) => {
     maxAge: 0,
   });
 
-  res.status(200).json({ msg: "User successfully logged out" });
+  res.status(200).json({ message: "User successfully logged out" });
 };
 
 module.exports = {
