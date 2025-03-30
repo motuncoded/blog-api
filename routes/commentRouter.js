@@ -5,9 +5,8 @@ const {
   get_comment_by_id,
   update_comment,
   delete_comment,
-  delete_all_comments_by_post,
 } = require("../controllers/commentController");
-const { userHandler, adminHandler } = require("../middleware/authHandler");
+const { userHandler } = require("../middleware/authHandler");
 
 const commentRouter = Router()
   // Create a comment (authenticated users only)
@@ -23,9 +22,7 @@ const commentRouter = Router()
   .put("/comment/:commentId", userHandler, update_comment)
 
   // Delete a comment (authenticated users only)
-  .delete("/comment/:commentId", userHandler, delete_comment)
+  .delete("/comment/:commentId", userHandler, delete_comment);
 
-  // Delete all comment (authenticated admin only)
-  .delete("/comment/post/:postId", adminHandler, delete_all_comments_by_post);
 
 module.exports = commentRouter;

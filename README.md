@@ -25,27 +25,36 @@ https://blog-api-one-pi.vercel.app/
 
 - **Register a user**
 
+Users are able to create an account. 
+
 ```
 POST /api/auth/register
 ```
 
-Register users that want to check out products. This end points provides full details for each user
 
 - **Login a user**
+
+Users are able to login. 
 
 ```
 POST /api/auth/login
 ```
 
-Login users that want to check out products.
-
 - **Logout a user**
+
+Users are able to logout.
 
 ```
 POST /api/auth/logout
 ```
 
-Login users are allowed to logout of the .
+- **Update Admin status**
+
+The user is able to switch role from between being a regular user and an admin to manage some tasks
+
+```
+PUT /api/users/:userId/isAdmin
+```
 
 #### CRUD operations for blog posts
 
@@ -72,15 +81,15 @@ GET /api/posts
 Retrieves a post by id
 
 ```
-GET /api/post/:id
+GET /api/posts/:postId
 ```
 
 - **Update a post**
 
-Upadate the post
+Upadate the details of the post
 
 ```
-PUT /api/post/:id
+PUT /api/post/:postId
 ```
 
 - **Delete a post**
@@ -88,139 +97,106 @@ PUT /api/post/:id
 Delete a post
 
 ```
-DELETE /api/post/:id
+DELETE /api/posts/:postId
 ```
 
-##### Comment system for blog posts
+#### Comment system for blog posts
 
 - **Create a comment**
 
 Creates a comment under a post
 
 ```
-POST /api/category
+POST /api/comment/create
 ```
+- **Get all comments**
 
-- **Get all categories**
-
-Retrieves a list of all categories
-
-```
-GET /api/categories
-```
-
-- **Get a category**
-
-Retrieves a category
+Retrieve all comments under a specific post
 
 ```
-GET /api/category/:id
+GET /api/comment/post/:postId"
 ```
 
-- **Update a category**
+- **Get a specific comments**
 
-Upadate a category
-
-```
-PUT /api/category/:id
-```
-
-- **Delete a category**
-
-Delete a category
+Retrieve a comment under a specific post using id
 
 ```
-DELETE /api/category/:id
+GET /api/comment/:commentId"
 ```
 
-#### Shopping cart
+- **Update a comment**
 
-This feature manage the items present in the cart referencing the product and the usee whose items are present.
-
-- **Create an item the cart**
-
-This initiate the cart with items created by the user
+Update the comment
 
 ```
-POST /api/add
+PUT /api/comment/:commentId
 ```
 
-- **Remove an item in the cart**
+- **Delete a comment** 
 
-This intiate the removal of an item in the cart
-
-```
-DELETE /api/remove
-```
-
-- **View cart**
-  This shows all items present in the cart
-
-```
-GET /api/carts
+Delete a comment by id
+  
+``` 
+Delete /api/comment/:commentId
 ```
 
-- **Clear cart**
-  This clears all items present in the cart
+
+#### User roles and permissions
+
+- **Get all users**
+
+Get all users
 
 ```
-DELETE /api/clear
+DELETE /api/users
 ```
 
-- **Update the cart**
-  This update the items present in the cart
+- **Get a user**
+
+Get a user by id
 
 ```
-PUT /api/update
+DELETE /api/users/:userId
 ```
 
-#### Admin spcific actions
+- **Delete a user**
 
-This applies to users who has the admin role to manage product
-listings, view orders, and update order statuses.
-
-##### Product Management
-
-- **Create a product**
-- **Get all products**
-- **Get a product**
-- **Update a product**
-- **Delete a product**
-
-##### Category Management
-
-- **Create a category**
-- **Get all categories**
-- **Get a category**
-- **Update a category**
-- **Delete a category**
-
-##### Order Management
-
-- **Get all orders**
-
-Retrieves a list of all orders.
+Delete a user
 
 ```
-GET /api/orders
+DELETE /api/users/:userId
 ```
 
-- **Update order status**
-
-Updates the status of an order.
-
-```
-PUT /api/order/:id/status
-```
-
-- **Delete an order**
-
-Deletes an order.
+- **Update status of user**
+Update status from user to admin and vice versa
 
 ```
-DELETE /api/order/:id
+PUT /api/users/:userId/isAdmin
 ```
 
+- **Delete a post by a user**
+
+Delete a post
+
+```
+DELETE /api/posts/:postId
+```
+
+- **Delete a comment**
+
+Delete a comment by a user under a post.
+
+```
+Delete /api/comment/:commentId
+```
+
+- **Delete all comments** 
+This  achieved by the admin to delete all comments under a post. 
+
+```
+DELETE /api/comment/post/:postId
+```
 ### Prerequisites
 
 Ensure you have the following installed on your machine:
@@ -241,13 +217,13 @@ Ensure you have the following installed on your machine:
 1. Clone the repository:
 
 ```sh
-git clone https://github.com/motuncoded/blog_api.git
+git clone https://github.com/motuncoded/blog-api.git
 ```
 
 2. Navigate to the project directory:
 
 ```sh
-cd blog_api
+cd blog-api
 ```
 
 3. Install dependencies:

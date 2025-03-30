@@ -5,6 +5,8 @@ const postModel = require("../models/postModel");
 // get all posts(protected)
 const get_all_posts = async (req, res, next) => {
   try {
+
+   // Find all posts, populate the author and comments fields, and sort by creation date in descending order
     const posts = await postModel
       .find()
       .populate("author", "username name")
@@ -24,12 +26,14 @@ const get_all_posts = async (req, res, next) => {
 
 //create a post(protected)
 const create_a_post = async (req, res, next) => {
-  const userId = req.user._id;
+  const userId = req.user._id; // Get the userId from the authenticated user
   try {
     if (!req.body) {
       return res.status(404).json({ message: "Post not found, create a post" });
     }
+    // Create a new post instance with the request body and the author set to the authenticated user
     const newPost = new postModel({ ...req.body, author: userId });
+    // Save the post to the database
     await newPost.save();
     res.status(201).json({ newPost, message: "Post created successfully" });
   } catch (err) {
@@ -39,8 +43,10 @@ const create_a_post = async (req, res, next) => {
 
 // get a post(protected)
 const get_a_post = async (req, res, next) => {
-  const { postId } = req.params;
+  const { postId } = req.params;// Extract postId from the request parameters
   try {
+
+    // Find the post by its ID and populate the author and comments fields
     const post = await postModel
       .findById(postId)
       .populate("author", "username name")
@@ -51,6 +57,8 @@ const get_a_post = async (req, res, next) => {
           select: "username",
         },
       });
+
+       // If the post is not found, return a 404 response
     if (!post) {
       return res.status(404).json({ message: "Post not found, create a post" });
     }
@@ -62,17 +70,17 @@ const get_a_post = async (req, res, next) => {
 
 //update a post(protected)
 const update_a_post = async (req, res, next) => {
-  const { postId } = req.params;
-  const updates = req.body;
+  const { postId } = req.params; // Extract postId from the request parameters
+  const updates = req.body; // Extract updates from the request body
 
   try {
-    const userId = req.user._id;
+    const userId = req.user._id;// Get the userId from the authenticated user
     if (!userId) {
       return res
         .status(401)
         .json({ message: "Unauthorized: Please log in to update a post." });
     }
-    // Find the post by ID
+    // Find the post by its ID
     const post = await postModel.findById(postId);
     if (!post) {
       return res
@@ -103,23 +111,28 @@ const update_a_post = async (req, res, next) => {
 
 // delete a post(protected)
 const delete_a_post = async (req, res, next) => {
-  const { postId } = req.params;
+  const { postId } = req.params;// Extract postId from the request parameters
   try {
-    const userId = req.user._id;
+    const userId = req.user._id;// Get the userId from the authenticated user
     if (!userId) {
       return res
         .status(401)
         .json({ message: "Unauthorized: Please log in to delete a post." });
     }
+    //if the post by its ID
     const post = await postModel.findById(postId);
     if (!post) {
       return res.status(404).json({ message: "Post not found, create a post" });
     }
+    // Ensure only the owner can delete the post
     if (post.author.toString() !== userId.toString()) {
       return res.status(403).json({
         message: "Access denied: You can only delete your own posts.",
       });
     }
+
+
+    //delete the post
     const deletedPost = await postModel.findByIdAndDelete(postId);
 
     if (!deletedPost) {

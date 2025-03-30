@@ -83,8 +83,77 @@ const logout = async (req, res, next) => {
   res.status(200).json({ message: "User successfully logged out" });
 };
 
+const get_all_users = async (req, res, next) => {
+   try {
+    const users = await userModel.find().select('-password');
+    res.status(200).json({users, message:"Users retrieved successfully."});
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Get a user by ID
+const get_a_user = async (req, res, next) => {
+  const { userId } = req.params;  // Extract userId from the request parameters
+
+  try {
+    const user = await userModel.findById(userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Delete a user by ID
+const delete_a_user = async (req, res, next) => {
+  const { userId } = req.params;  // Extract userId from the request parameters
+
+  try {
+    // Find the user by its ID
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const deletedUser = await userModel.findByIdAndDelete(userId);
+    res.status(200).json({deletedUser, message: 'User deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const update_status = async (req, res, next) => {
+  const { userId } = req.params;  // Extract userId from the request parameters
+  const { isAdmin } = req.body; // Get the new status from the request body
+
+  try {
+        // Find the user by its ID
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.isAdmin = isAdmin;
+    await user.save();
+
+    res
+      .status(200)
+      .json({ user, message: "User admin status updated successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
   register,
   login,
   logout,
+  get_all_users,
+  get_a_user,
+  delete_a_user,
+  update_status
 };

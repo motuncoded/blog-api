@@ -23,6 +23,7 @@ const userModel = new mongoose.Schema(
       type: String,
       required: true,
     },
+    // Admin roles
     isAdmin: {
       type: Boolean,
       default: false,
