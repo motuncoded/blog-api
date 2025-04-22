@@ -28,13 +28,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Define a route to render the index.html
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
-app.use("/api", postRouter);
 app.use("/api", userRouter);
+app.use("/api", postRouter);
 app.use("/api", commentRouter);
 app.use("/api", adminRouter);
 
